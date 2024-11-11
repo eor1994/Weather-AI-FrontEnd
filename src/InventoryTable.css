@@ -1,49 +1,19 @@
-const InventoryTable = () => {
-    const tableContainerStyle = {
-      display: 'flex',
-      justifyContent: 'center',   // Horizontal centering
-      alignItems: 'center',       // Vertical centering
-      height: '100vh',            // Full viewport height
-    };
-  
-    const tableStyle = {
-      borderCollapse: 'collapse',
-      width: '80%',
-      maxWidth: '600px',
-    };
-  
-    const cellStyle = {
-      border: '1px solid black',
-      padding: '10px',
-      textAlign: 'left',
-    };
-  
-    return (
-      <div style={tableContainerStyle}>
-        <table style={tableStyle}>
-          <thead>
-            <tr>
-              <th style={cellStyle}>Item Name</th>
-              <th style={cellStyle}>Quantity</th>
-              <th style={cellStyle}>Price</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr>
-              <td style={cellStyle}>Item 1</td>
-              <td style={cellStyle}>10</td>
-              <td style={cellStyle}>$5.00</td>
-            </tr>
-            <tr>
-              <td style={cellStyle}>Item 2</td>
-              <td style={cellStyle}>20</td>
-              <td style={cellStyle}>$10.00</td>
-            </tr>
-          </tbody>
-        </table>
-      </div>
-    );
-  };
-  
-  export default InventoryTable;
-  
+/* styles.css */
+.table-container {
+  display: flex;
+  justify-content: center;  /* Horizontal centering */
+  align-items: center;      /* Vertical centering */
+  height: 100vh;            /* Full viewport height to center vertically */
+}
+
+table {
+  border-collapse: collapse;  /* Optional: makes table borders cleaner */
+  width: 80%;                 /* You can adjust the table width */
+  max-width: 600px;           /* Maximum width to avoid large tables */
+}
+
+th, td {
+  border: 1px solid black;     /* Simple border for table */
+  padding: 10px;
+  text-align: left;
+}

@@ -7,7 +7,7 @@ function App() {
   //setup 
   //Defined state variables
   const [city, setCity] = useState('');
-  const [countryCode, setCountryCode] = useState('');
+  const [country, setCountryCode] = useState(null);
   const [weatherData, setWeatherData] = useState(null);
   const [error, setError] = useState('');  // Initialize error state
 
@@ -20,23 +20,32 @@ function App() {
   const [responseMessage, setResponseMessage] = useState('');
   const [isLoading, setIsLoading] = useState(false);
 
+//
+const [selectedValue, setSelectedValue] = useState('');
 
 //this changes the value to search 
 const handleCityChange = (e) => {
   setCity(e.target.value);
 };
-const handleCountryCodeChange = (e) => {
-  setCountryCode(e.target.value);
+const handleCountryCodeChange = (ev) => {
+  const val = ev.target.value;
+  setCountryCode(val);
 };
 
-const fetchWeatherData = async () => {
+
+
+const fetchWeatherData = async (Country_name) => {
+
+  const newValue = Country_name.target.value;
+  setSelectedValue(newValue);
+
   if (!city) {
     setError('Please enter a city name');  // Set an error message if no city is entered
     return;  // Stop further execution if no city is entered
   }
   try {
     // Make an HTTP GET request to the backend to get the weather data
-    const response = await fetch(`http://localhost:8080/api/searchWeather?city=${city}&countryCode=${countryCode}`);
+    const response = await fetch(`http://localhost:8080/api/searchWeather?city=${city}&countryCode=${country}`);
     const data = await response.json();  // Parse the JSON response
     setWeatherData(data);  // Store the weather data in the state
     setError('');  // Clear any previous error message
@@ -61,6 +70,37 @@ const fetchInventoryData = async () => {
   }
 };
 
+//----------------------------------
+
+
+// Function to handle dropdown selection change
+const handleChange = async (event) => {
+  const newValue = event.target.value;
+  setSelectedValue(newValue);
+
+  // Send the selected value to the Spring Boot endpoint
+  try {
+      const response = await fetch(`http://localhost:8080/api/inventory/?selected=${newValue}`, {
+          method: 'GET',
+          headers: {
+              'Content-Type': 'application/json',
+          },
+      });
+
+      if (response.ok) {
+          const data = await response.data;
+          console.log("Response from server:", data);
+      } else {
+          console.error("Failed to fetch data from server.");
+      }
+  } catch (error) {
+      console.error("Error:", error);
+  }
+};
+
+
+//----------------------------------
+//AI
 // Handle form submission
 const handleSubmit = async (e) => {
   e.preventDefault(); // Prevent default form submission behavior
@@ -102,7 +142,7 @@ const handleSubmit = async (e) => {
        />
 
         {/* Country code dropdown */}
-        <select value={countryCode} onChange={handleCountryCodeChange}>
+        <select value={country} onChange={handleCountryCodeChange}>
             <option value="IRE">Ireland</option>
             <option value="US">United States</option>
             <option value="CA">Canada</option>
@@ -119,7 +159,7 @@ const handleSubmit = async (e) => {
 
       {weatherData && (
           <div className="weather-result">
-            <h2>Weather in {city}, {countryCode}</h2>
+            <h2>Weather in {city}, {country}</h2>
             <p>Weather: {weatherData.description}</p>
             <p>Temperature: {weatherData.temperature} °C</p>
             <p>Latitude: {weatherData.latitude}</p>
@@ -127,7 +167,7 @@ const handleSubmit = async (e) => {
           </div>
         )}
         
-        <div>
+      <div>
       <h1>Inventory</h1>
       {/* Button to trigger fetching inventory data */}
       <button onClick={fetchInventoryData}>Fetch Inventory Data</button>
@@ -165,6 +205,17 @@ const handleSubmit = async (e) => {
         </table>
       )}
     </div>
+
+    
+    <div>
+            <label htmlFor="dropdown">Choose an option:</label>
+            <select id="dropdown" value={selectedValue} onChange={handleChange}>
+                <option value="">Select...</option>
+                <option value="inventory3">Eoin</option>
+                {/* Add more options as needed */}
+            </select>
+        </div>
+
 
       <h1>ChatGPT Assistant</h1>
       <form onSubmit={handleSubmit}>
@@ -213,4 +264,4 @@ const handleSubmit = async (e) => {
   );
 }
 
-export default App;
+export default App; 
